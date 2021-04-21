@@ -1,0 +1,209 @@
+#include <stdio.h>
+#include <Windows.h>
+#include <time.h>
+#include <conio.h>
+#include <stdlib.h>
+#include "wjdaudwlr.h"
+
+#define MAX 10
+
+int lv = 4;
+int score = 0;
+
+// 게임스타트 화면
+void Gamestart(void)
+{
+	while (1)
+	{
+		score = 0;
+		char menu = '\0' ;
+		char lavel = '\0';
+		GotoXY(2, 3);
+		printf("F A L L I N G");
+		GotoXY(4, 5);
+		printf("S T A R");
+		GotoXY(5, 8);
+		printf("★★★");
+		GotoXY(3, 12);
+		printf("게임시작(1)");
+		GotoXY(1, 14);
+		printf("난이도 변경(2)");
+		GotoXY(3, 16);
+		printf("게임종료(3)");
+		GotoXY(5, 19);
+		printf("제작 정명직");
+		if (_kbhit())
+		{
+			menu = _getch();  // 게임 메뉴 선택
+		}
+		if (menu == '3') // 게임종료
+		{
+			exit(0);
+		}
+		if (menu == '1') // 게임시작
+		{
+			break;
+		}
+		if (menu == '2') // 난이도 조절
+		{
+			while (1)
+			{
+				system("cls");
+				GotoXY(4, 4);
+				printf("Easy(1)");
+				GotoXY(4, 8);
+				printf("Normal(2)");
+				GotoXY(4, 12);
+				printf("Hard(3)");
+
+				if (_kbhit())
+				{
+					lavel = _getch();
+				}
+				if (lavel == '1')
+				{
+					lv = 3;
+					system("cls");
+					break;
+				}
+				if (lavel == '2')
+				{
+					lv = 4;
+					system("cls");
+					break;
+				}
+				if (lavel == '3')
+				{
+					lv = 6;
+					system("cls");
+					break;
+				}
+			}
+		}
+		
+	}
+}
+
+
+// 게임오버 화면
+void Gameover(void)
+{
+	system("cls");
+	GotoXY(5, 7);
+	printf("G A M E"); 
+	GotoXY(5, 10);
+	printf("O V E R");
+	GotoXY(3, 14);
+	printf("score : %d", score / lv);
+
+	printf("\n\n\n\n\n");
+	system("pause");
+}
+
+
+int main() {
+
+	while (1)
+	{
+		system("mode con:cols=16 lines=20"); // 콘솔창 크키 변경
+
+		srand(time(NULL)); 
+
+		setcursortype(NOCURSOR); // 커서 숨기기
+
+		Gamestart(); // 게임 스타트 함수
+
+		int star_x[MAX] = { 0 };
+		int	star_y[MAX] = { 0 };
+		bool enemy[MAX] = { false };
+		bool player = true;
+		bool scr = false;
+		int i = 0, sub_i = 0, j = 0;
+		char ch;
+
+		int x = 8, y = 17;
+
+		GotoXY(x, y);
+		printf("▲");
+
+		while (1)
+		{
+			system("cls");
+			// 플레이어 이동 
+			GotoXY(x, y);
+			printf(" ");
+
+			ch = '\0';
+
+			if (_kbhit())
+			{
+				ch = _getch();
+			}
+
+			switch (ch)
+			{
+			case'a':
+				if (x > 0)
+					x -= 2;
+				break;
+			case'd':
+				if (x < 14)
+					x += 2;
+			}
+			GotoXY(x, y);
+			printf("▲");
+
+
+			// 별의 X를 랜덤으로 정하고 X가 같으면 다시 
+			for (i = 0; i < lv; i++)
+			{
+				if (!enemy[i])
+				{
+					star_x[i] = (rand() % 8) * 2;
+					star_y[i] = 0;
+					for (sub_i = 0; sub_i < i; sub_i++)
+						if (star_x[i] == star_x[sub_i])
+							i--;
+				}
+				enemy[i] = true;
+			}
+
+
+			// 별을 출력 별을 떨어 트림
+			for (i = 0; i < lv; i++)
+			{
+				if (enemy[i])
+				{
+					GotoXY(star_x[i], star_y[i]);
+					printf("★");
+					star_y[i]++;
+					// 충돌 체크
+					if (star_x[i] == x && star_y[i] == y)
+					{
+						printf("\a");
+						player = false;
+					}
+
+					if (star_y[i] > y + 1)
+					{
+						enemy[i] = false;
+						score += 10;
+					}
+				}
+			}
+
+			//점수 출력
+			GotoXY(4, 19);
+			printf("score : %d", score / lv);
+
+			if (!player)
+			{
+				break;
+			}
+			Sleep(10);
+		}
+		Gameover();
+	}
+	return 0;
+}
+
