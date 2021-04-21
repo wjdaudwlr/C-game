@@ -1,0 +1,346 @@
+#include <stdio.h>
+#include <Windows.h>
+#include <time.h>
+#include <conio.h>
+#include "wjdaudwlr.h"
+
+#define TREE_BOTTOM_X 30
+
+#define TREE_BOTTOM_Y 16
+#define TREE_BOTTOM_Y_2 10
+#define TREE_BOTTOM_Y_3 12
+#define TREE_UP_BOTTOM_Y 3
+#define TREE_UP_BOTTOM_Y_2 9
+#define TREE_UP_BOTTOM_Y_3 7
+
+
+const int refreshRate = 50;
+
+// 콘솔창 크기와 제목 설정
+void SetConsoleView()
+{
+	system("mode con:cols=51 lines=20");
+	system("title Flappy Heart");
+}
+// 아래쪽 나무
+void DrawTree(int treeX)
+{
+	GotoXY(treeX, TREE_BOTTOM_Y );
+	printf("■■");
+	GotoXY(treeX, TREE_BOTTOM_Y + 1);
+	printf("■■");
+	GotoXY(treeX, TREE_BOTTOM_Y + 2);
+	printf("■■");
+	GotoXY(treeX, TREE_BOTTOM_Y + 3);
+	printf("■■");
+
+}
+
+void DrawTree_2(int treeX)
+{
+	GotoXY(treeX, TREE_BOTTOM_Y_2 );
+	printf("■■");
+	GotoXY(treeX, TREE_BOTTOM_Y_2 +1);
+	printf("■■");
+	GotoXY(treeX, TREE_BOTTOM_Y_2 +2);
+	printf("■■");
+	GotoXY(treeX, TREE_BOTTOM_Y_2 + 3);
+	printf("■■");
+	GotoXY(treeX, TREE_BOTTOM_Y_2 + 4);
+	printf("■■");
+	GotoXY(treeX, TREE_BOTTOM_Y_2 + 5);
+	printf("■■");
+	GotoXY(treeX, TREE_BOTTOM_Y_2 + 6);
+	printf("■■");
+	GotoXY(treeX, TREE_BOTTOM_Y_2 + 7);
+	printf("■■");
+	GotoXY(treeX, TREE_BOTTOM_Y_2 + 8);
+	printf("■■");
+	GotoXY(treeX, TREE_BOTTOM_Y_2 + 9);
+	printf("■■");
+}
+
+void DrawTree_3(int treeX)
+{
+	GotoXY(treeX, TREE_BOTTOM_Y_3);
+	printf("■■");
+	GotoXY(treeX, TREE_BOTTOM_Y_3 + 1);
+	printf("■■");
+	GotoXY(treeX, TREE_BOTTOM_Y_3 + 2);
+	printf("■■");
+	GotoXY(treeX, TREE_BOTTOM_Y_3 + 3);
+	printf("■■");
+	GotoXY(treeX, TREE_BOTTOM_Y_3 + 4);
+	printf("■■");
+	GotoXY(treeX, TREE_BOTTOM_Y_3 + 5);
+	printf("■■");
+	GotoXY(treeX, TREE_BOTTOM_Y_3 + 6);
+	printf("■■");
+	GotoXY(treeX, TREE_BOTTOM_Y_3 + 7);
+	printf("■■");
+
+}
+
+// 위쪽 나무
+void DrawTree_UP(int treeX)
+{
+	GotoXY(treeX, TREE_UP_BOTTOM_Y);
+	printf("■■");
+	GotoXY(treeX, TREE_UP_BOTTOM_Y - 1);
+	printf("■■");
+	GotoXY(treeX, TREE_UP_BOTTOM_Y - 2);
+	printf("■■");
+	GotoXY(treeX, TREE_UP_BOTTOM_Y - 3);
+	printf("■■");
+
+}
+
+void DrawTree_UP_2(int treeX)
+{
+	GotoXY(treeX, TREE_UP_BOTTOM_Y_2);
+	printf("■■");
+	GotoXY(treeX, TREE_UP_BOTTOM_Y_2 - 1);
+	printf("■■");
+	GotoXY(treeX, TREE_UP_BOTTOM_Y_2 - 2);
+	printf("■■");
+	GotoXY(treeX, TREE_UP_BOTTOM_Y_2 - 3);
+	printf("■■");
+	GotoXY(treeX, TREE_UP_BOTTOM_Y_2 - 4);
+	printf("■■");
+	GotoXY(treeX, TREE_UP_BOTTOM_Y_2 - 5);
+	printf("■■");
+	GotoXY(treeX, TREE_UP_BOTTOM_Y_2 - 6);
+	printf("■■");
+	GotoXY(treeX, TREE_UP_BOTTOM_Y_2 - 7);
+	printf("■■");
+	GotoXY(treeX, TREE_UP_BOTTOM_Y_2 - 8);
+	printf("■■");
+	GotoXY(treeX, TREE_UP_BOTTOM_Y_2 - 9);
+	printf("■■");
+}
+
+void DrawTree_UP_3(int treeX)
+{
+	GotoXY(treeX, TREE_UP_BOTTOM_Y_3);
+	printf("■■");
+	GotoXY(treeX, TREE_UP_BOTTOM_Y_3 - 1);
+	printf("■■");
+	GotoXY(treeX, TREE_UP_BOTTOM_Y_3 - 2);
+	printf("■■");
+	GotoXY(treeX, TREE_UP_BOTTOM_Y_3 - 3);
+	printf("■■");
+	GotoXY(treeX, TREE_UP_BOTTOM_Y_3 - 4);
+	printf("■■");
+	GotoXY(treeX, TREE_UP_BOTTOM_Y_3 - 5);
+	printf("■■");
+	GotoXY(treeX, TREE_UP_BOTTOM_Y_3 - 6);
+	printf("■■");
+	GotoXY(treeX, TREE_UP_BOTTOM_Y_3 - 7);
+	printf("■■");
+}
+
+// 게임 오버 그리는 함수
+void GameOver(int score)
+{
+	system("cls");
+	GotoXY(13, 6);
+	printf("=======================");
+	GotoXY(13, 8);
+	printf("=== G A M E  O V E R===");
+	GotoXY(13, 11);
+	printf("=======================\n");
+	GotoXY(20, 14);
+	printf("score : %d", score);
+	GotoXY(13, 17);
+	system("pause");
+}
+
+// 스타트 메뉴 그리는 함수
+void StartMenu(void)
+{
+	while (1)
+	{
+		GotoXY(19, 6);
+		printf("Flappy Heart");
+
+		GotoXY(10, 11);
+		printf("시작하려면 아무키나 누르세요...");
+
+		GotoXY(38, 19);
+		printf("제작 : 정명직");
+
+		GotoXY(17, 14);
+		printf("점프 : 스페이스");
+
+		if (_kbhit())
+		{
+			int score = 0;
+			_getch();
+			break;
+			
+		}
+	}
+}
+
+
+int main_a(){
+	while (1) {
+		srand(time(NULL));
+
+		SetConsoleView(); // 콘솔창 크키와 제목 설정 함수
+
+		setcursortype(NOCURSOR); // 커서 안보이게 하는 함수
+
+		StartMenu(); // 시작 화면
+
+		int x = 5, y = 10;
+		int treeX = TREE_BOTTOM_X;
+		int score = -1;
+		int tree = 0;
+		int cnt = 0;
+		char Move;
+		bool pause = true;
+
+
+		GotoXY(x, y);
+		printf("♥");
+
+		
+		while (1)
+		{
+
+			// 스코어가 높아질수록 플레이어가 떨어지는 속도를 빠르게 한다
+			if (score <= 10)
+			{
+				if (cnt % 10 == 0)
+				{
+					y++;
+					if (y > 19 || y == 1) break;
+				}
+			}
+			else if (score > 10 && score <= 20)
+			{
+				if (cnt % 7 == 0)
+				{
+					y++;
+					if (y > 19 || y == 1) break;
+				}
+			}
+			else if (score > 20 && score <= 30)
+			{
+				if (cnt % 5 == 0)
+				{
+					y++;
+					if (y > 19 || y == 1) break;
+				}
+			}
+			else if (score > 30 && score <= 50)
+			{
+				if (cnt % 4 == 0)
+				{
+					y++;
+					if (y > 19 || y == 1) break;
+				}
+			}
+			else if (score > 50 && score <= 100)
+			{
+				if (cnt % 3 == 0)
+				{
+					y++;
+					if (y > 19 || y == 1) break;
+				}
+			}
+			else if (score > 100)
+			{
+				if (cnt % 2 == 0)
+				{
+					y++;
+					if (y > 19 || y == 1) break;
+				}
+			}
+
+			// 플레이어 이동
+			Move = '\0';
+			if (_kbhit()) Move = _getch();
+
+			GotoXY(x, y);
+			printf(" ");
+
+			switch (Move)
+			{
+			case ' ':
+				if (y > 0) y -= 2;
+
+				break;
+			}
+			GotoXY(x, y);
+			printf("♥");
+
+			// 아래쪽 나무가 왼쪽으로 가고 나무 X가 0이면 다시 초기화
+			treeX -= 1;
+			if (treeX <= 0)
+			{
+				treeX = TREE_BOTTOM_X;
+				tree = rand() % 3;
+			}
+
+			// 랜덤으로 나무 출력 
+			if (tree == 0)
+			{
+				DrawTree_3(treeX);
+				DrawTree_UP_3(treeX);
+			}
+			else if (tree == 1)
+			{
+				DrawTree_2(treeX);
+				DrawTree_UP(treeX);
+			}
+			else if (tree == 2)
+			{
+				DrawTree(treeX);
+				DrawTree_UP_2(treeX);
+			}
+
+			// 나무와 부딪히면 게임오버
+			if (tree == 0)
+			{
+				if (x == treeX)
+				{
+					if (7 >= y || y >= 12)
+						break;
+				}
+			}
+			else if (tree == 1)
+			{
+				if (x == treeX)
+				{
+					if (3 >= y || y >= 10)
+						break;
+				}
+			}
+			else if (tree == 2)
+			{
+				if (x == treeX)
+				{
+					if (9 >= y || y >= 16)
+						break;
+				}
+			}
+
+			// 점수 출력 
+			GotoXY(40, 0);
+			if (cnt % 30 == 0)
+			{
+				score++;
+			}
+			printf("score : %d", score);
+
+			Sleep(1000 / refreshRate);
+			cnt++;
+			system("cls");
+		}
+		
+		GameOver(score); // 게임오버 화면 점수 출력
+	}
+	return 0;
+}
