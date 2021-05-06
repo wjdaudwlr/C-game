@@ -1,0 +1,573 @@
+#include <stdio.h>
+#include <Windows.h>
+#include <time.h>
+#include <conio.h>
+#include <stdlib.h>
+#include "wjdaudwlr.h"
+
+#define LEFT 75
+#define RIGHT 77
+#define DOWN 80
+#define UP 72
+#define ENTER 13
+#define SPACE 32
+#define BOSS_X 19
+#define BOSS_Y 2
+#define BOSSHP_X 40
+#define BOSSHP_Y 0
+#define PLAYER_HP_X 0
+#define PLAYER_HP_Y 19
+#define MAX 1
+#define STAR 12
+#define MENU_X 7
+#define MENU_Y 2
+#define OVER_X 2
+#define WIN_X 8
+
+int menu_y = 12;
+int menu = '\0';
+char over = '\0';
+char win = '\0';
+//보스 그리기
+void Bossdraw(int boss_x)
+{
+	GotoXY(boss_x, BOSS_Y);
+	printf("    ■■■■■■");
+	GotoXY(boss_x, BOSS_Y+1);
+	printf("  ■■■■■■■■");
+	GotoXY(boss_x, BOSS_Y + 2);
+	printf("●■■■■■■■■●");
+	GotoXY(boss_x, BOSS_Y + 3);
+	printf("ㅣ●■■■■■■●ㅣ");
+	GotoXY(boss_x, BOSS_Y + 4);
+	printf("  ㅣ▼▼▼▼▼▼ㅣ");
+}
+// 보스 HP 그리기 
+void boss_HPdraw(int HP)
+{
+	if (HP == 10)
+	{
+		GotoXY(BOSSHP_X, BOSSHP_Y);
+		printf("■■■■■■■■■■");
+	}
+	else if (HP == 9)
+	{
+		GotoXY(BOSSHP_X+2, BOSSHP_Y);
+		printf("■■■■■■■■■");
+	}
+	else if (HP == 8)
+	{
+		GotoXY(BOSSHP_X+4, BOSSHP_Y);
+		printf("■■■■■■■■");
+	}
+	else if (HP == 7)
+	{
+		GotoXY(BOSSHP_X+6, BOSSHP_Y);
+		printf("■■■■■■■");
+	}
+	else if (HP == 6)
+	{
+		GotoXY(BOSSHP_X+8, BOSSHP_Y);
+		printf("■■■■■■");
+	}
+	else if (HP == 5)
+	{
+		GotoXY(BOSSHP_X+10, BOSSHP_Y);
+		printf("■■■■■");
+	}
+	else if (HP == 4)
+	{
+		GotoXY(BOSSHP_X+12, BOSSHP_Y);
+		printf("■■■■");
+	}
+	else if (HP == 3)
+	{
+		GotoXY(BOSSHP_X+14, BOSSHP_Y);
+		printf("■■■");
+	}
+	else if (HP == 2)
+	{
+		GotoXY(BOSSHP_X+16, BOSSHP_Y);
+		printf("■■");
+	}
+	else if (HP == 1)
+	{
+		GotoXY(BOSSHP_X+18, BOSSHP_Y);
+		printf("■");
+	}
+	else if (HP == 0)
+	{
+		GotoXY(BOSSHP_X, BOSSHP_Y);
+		printf("");
+	}
+}
+// 플레이어 체력 그리기
+void player_HPdraw(int _HP) {
+	
+	if (_HP == 3)
+	{
+		GotoXY(PLAYER_HP_X, PLAYER_HP_Y);
+		printf("♥♥♥");
+	}
+	else if (_HP == 2)
+	{
+		GotoXY(PLAYER_HP_X, PLAYER_HP_Y);
+		printf("♥♥");
+	}
+	else if (_HP == 1)
+	{
+		GotoXY(PLAYER_HP_X, PLAYER_HP_Y);
+		printf("♥");
+	}
+}
+
+// 게임 시작화면 그리기 
+void GameMenu(void)
+{
+	while (1)
+	{
+		GotoXY(MENU_X,MENU_Y);
+		printf("■■■■      ■■■      ■■■      ■■■");
+		GotoXY(MENU_X, MENU_Y+1);
+		printf("■      ■  ■      ■  ■      ■  ■      ■");
+		GotoXY(MENU_X, MENU_Y+2);
+		printf("■      ■  ■      ■  ■          ■");
+		GotoXY(MENU_X, MENU_Y+3);
+		printf("■■■■    ■      ■    ■■■      ■■■");
+		GotoXY(MENU_X, MENU_Y + 4);
+		printf("■      ■  ■      ■          ■          ■");
+		GotoXY(MENU_X, MENU_Y + 5);
+		printf("■      ■  ■      ■  ■      ■  ■      ■");
+		GotoXY(MENU_X, MENU_Y + 6);
+		printf("■■■■      ■■■      ■■■      ■■■");
+
+		GotoXY(MENU_X + 18, MENU_Y + 10);
+		printf("GAME START");
+		GotoXY(MENU_X + 18, MENU_Y + 12);
+		printf("GAME RULE");
+		GotoXY(MENU_X + 18, MENU_Y + 14);
+		printf("GAME EXIT");
+		GotoXY(MENU_X + 40, MENU_Y + 17);
+		printf("제작자 정명직");
+		
+		GotoXY(MENU_X + 15, menu_y);
+		printf("▶");
+
+		// 메뉴 기능 선택하기 
+		if (_kbhit())
+		{
+			menu = _getch();
+			if (menu == DOWN)
+			{
+				if (menu_y < 16)
+				{
+					menu_y += 2;
+					system("cls");
+				}
+			}
+			else if (menu == UP)
+			{
+				if (menu_y > 12)
+				{
+					menu_y -= 2;
+					system("cls");
+				}
+			}
+
+			if (menu_y == 12)
+			{
+				GotoXY(MENU_X + 15, menu_y);
+				printf("▶");
+				if (menu == ENTER)
+				{
+					break;
+				}
+			}
+			else if (menu_y == 14)
+			{
+				GotoXY(MENU_X + 15, menu_y);
+				printf("▶");
+				if (menu == ENTER)
+				{
+					system("cls");
+					while (1)
+					{
+						GotoXY(11, 3);
+						printf("조작법");
+						GotoXY(11, 5);
+						printf("이동 : ← → 공격 : space ");
+						GotoXY(11, 7);
+						printf("게임 설명");
+						GotoXY(11, 9);
+						printf("보스의 공격을 피하면서 공격해 보스를 죽여라!");
+						GotoXY(20, BOSS_Y + 11);
+						printf("    ■■■■■■");
+						GotoXY(20, BOSS_Y + 12);
+						printf("  ■■■■■■■■");
+						GotoXY(20, BOSS_Y + 13);
+						printf("●■■■■■■■■●");
+						GotoXY(20, BOSS_Y + 14);
+						printf("ㅣ●■■■■■■●ㅣ");
+						GotoXY(20, BOSS_Y + 15);
+						printf("  ㅣ▼▼▼▼▼▼ㅣ");
+						GotoXY(10, 15);
+						printf("보스 →");
+						GotoXY(30, 19);
+						printf("나가려면 아무키나 누르세요...");
+						if (_kbhit())
+						{
+							system("cls");
+							break;
+						}
+					}
+				}
+			}
+			else if (menu_y == 16)
+			{
+				GotoXY(MENU_X + 15, menu_y);
+				printf("▶");
+				if (menu == ENTER)
+				{
+					exit(0);
+				}
+			}
+		}
+	
+	}
+}
+// 게임오버 그리기
+void game_Over(void)
+{
+	while (1)
+	{
+		GotoXY(OVER_X,3);
+		printf("■      ■    ■■    ■    ■");
+		GotoXY(OVER_X, 4);
+		printf("  ■  ■    ■    ■  ■    ■");
+		GotoXY(OVER_X, 5);
+		printf("    ■      ■    ■  ■    ■");
+		GotoXY(OVER_X, 6);
+		printf("    ■      ■    ■  ■    ■");
+		GotoXY(OVER_X, 7);
+		printf("    ■        ■■      ■■");
+		GotoXY(OVER_X + 18, 10);
+		printf("■■■    ■■■  ■■■■  ■■■");
+		GotoXY(OVER_X + 18, 11);
+		printf("■    ■    ■    ■        ■    ■");
+		GotoXY(OVER_X + 18, 12);
+		printf("■    ■    ■    ■■■■  ■    ■");
+		GotoXY(OVER_X + 18, 13);
+		printf("■    ■    ■    ■        ■    ■");
+		GotoXY(OVER_X + 18, 14);
+		printf("■■■    ■■■  ■■■■  ■■■");
+		GotoXY(OVER_X + 20, 17);
+		printf("돌아가기(1)");
+		if (_kbhit())
+		{
+			over = _getch();
+			if (over == '1')
+			{
+				break;
+			}
+		}
+	}
+}
+
+// 게임 승리 그리기
+void game_Win(void)
+{
+	while (1)
+	{
+		GotoXY(WIN_X, 5);
+		printf("■              ■  ■■■  ■■      ■");
+		GotoXY(WIN_X, 6);
+		printf("■      ■      ■    ■    ■  ■    ■");
+		GotoXY(WIN_X, 7);
+		printf("  ■  ■  ■  ■      ■    ■  ■    ■");
+		GotoXY(WIN_X, 8);
+		printf("  ■  ■  ■  ■      ■    ■    ■  ■");
+		GotoXY(WIN_X, 9);
+		printf("    ■      ■        ■    ■    ■  ■");
+		GotoXY(WIN_X, 10);
+		printf("    ■      ■      ■■■  ■      ■■");
+		GotoXY(OVER_X + 20, 17);
+		printf("돌아가기(1)");
+		if (_kbhit())
+		{
+			win = _getch();
+			if (win == '1')
+				break;
+		}
+	}
+}
+
+int main() {
+	while (1)
+	{
+		system("mode con:cols=60 lines=20");
+		system("title BOSS");
+
+		setcursortype(NOCURSOR);
+
+		GameMenu();
+
+
+		int i, j;
+		int player_x = 25, player_y = 17;
+		int player_hp = 3;
+		int rocket_x, rocket_y;
+		int cnt = 0;
+		char player[] = { "●■●" };
+		int key = 0;
+		int space = 0;
+		bool rocket = false;
+		bool rocket_0 = false;
+		rocket_x = player_x + 2;
+		rocket_y = player_y - 1;
+		int boss_x = BOSS_X;
+		int boss_move = 0;
+		int boss_hp = 10;
+		int boss_rocket_x[MAX] = { 0 };
+		int boss_rocket_y[MAX] = { 0 };
+		int boss_rocket[MAX] = { false };
+		int boss_rocket2_x[MAX] = { 0 };
+		int boss_rocket2_y[MAX] = { 0 };
+		int boss_rocket2[MAX] = { false };
+		int boss_star_x[STAR] = { 0 };
+		int boss_star_y[STAR] = { 0 };
+		bool boss_star[STAR] = { false };
+		int boss_sk = 0;
+		bool boss_skl = true;
+		while (1)
+		{
+			srand(time(NULL));
+
+			// 보스의 스킬을 랜덤으로
+			if (boss_skl == true)
+			{
+				boss_sk = rand() % 2;
+				boss_skl = false;
+			}
+			// 보스를 랜덤으로 움직임
+			boss_move = rand() % 2;
+			if (cnt % 2 == 0)
+			{
+				if (boss_move == 0)
+				{
+					if (boss_x > 2)
+						boss_x -= 2;
+					system("cls");
+				}
+				if (boss_move == 1)
+				{
+					if (boss_x < 36)
+						boss_x += 2;
+					system("cls");
+				}
+			}
+			// 보스 그리기
+			Bossdraw(boss_x);
+
+			// 보스 HP 그리기
+			boss_HPdraw(boss_hp);
+
+			// 플레이어 HP 그리기
+			player_HPdraw(player_hp);
+
+			// 보스 1번 스킬
+			if (boss_sk == 0)
+			{
+				// 보스 왼쪽 로켓 X,Y 설정하기 
+				for (i = 0; i < MAX; i++)
+				{
+					if (!boss_rocket[i])
+					{
+						boss_rocket_x[i] = boss_x ;
+						boss_rocket_y[i] = 5;
+						boss_rocket[i] = true;
+						break;
+					}
+				}
+				// 보스 윈쪽 로켓 출력하기
+				for (i = 0; i < MAX; i++)
+				{
+					if (boss_rocket[i])
+					{
+						GotoXY(boss_rocket_x[i], boss_rocket_y[i]);
+						printf("●");
+						boss_rocket_y[i]++;
+						if (boss_rocket_y[i] > player_y)
+						{
+							boss_rocket[i] = false;
+							boss_skl = true;
+						}
+						if (boss_rocket_y[i] == player_y)
+						{
+							if (boss_rocket_x[i] >= player_x - 2 && boss_rocket_x[i] <= player_x + 5)
+								player_hp--;
+						}
+					}
+				}
+				// 보스 오른쪽 로켓 X,Y 설정
+				for (i = 0; i < MAX; i++)
+				{
+					if (!boss_rocket2[i])
+					{
+						boss_rocket2_x[i] = boss_x + 20;
+						boss_rocket2_y[i] = 5;
+						boss_rocket2[i] = true;
+						break;
+					}
+				}
+				//보스 오른쪽 로켓 출력
+				for (i = 0; i < MAX; i++)
+				{
+					if (boss_rocket2[i])
+					{
+						GotoXY(boss_rocket2_x[i], boss_rocket2_y[i]);
+						printf("●");
+						boss_rocket2_y[i]++;
+						if (boss_rocket2_y[i] > player_y)
+						{
+							boss_rocket2[i] = false;
+							boss_skl = true;
+						}
+						if (boss_rocket2_y[i] == player_y)
+						{
+							if (boss_rocket2_x[i] >= player_x - 2 && boss_rocket2_x[i] <= player_x + 4)
+								player_hp--;
+						}
+					}
+				}
+			}
+			// 보스 2번 스킬
+			else if (boss_sk == 1)
+			{
+				for (i = 0; i < STAR; i++)
+				{
+					if (!boss_star[i])
+					{
+						boss_star_x[i] = boss_x + i + 6;
+						boss_star_y[i] = 6;
+					}
+					boss_star[i] = true;
+				}
+				for (i = 0; i < STAR; i++)
+				{
+					if (boss_star[i])
+					{
+						if (cnt % 2 == 0)
+						{
+							GotoXY(boss_star_x[i], boss_star_y[i]);
+							printf("▼");
+							boss_star_y[i]++;
+							if (boss_star_y[i] > player_y)
+							{
+								boss_star[i] = false;
+								boss_skl = true;
+							}
+							if (boss_star_y[i] == player_y)
+							{
+								if (boss_star_x[i] >= player_x - 2 && boss_star_x[i] <= player_x + 4)
+									player_hp--;
+							}
+						}
+					}
+				}
+			}
+
+
+
+			// 플레이어 이동
+			GotoXY(player_x, player_y);
+			printf("      ");
+			if (_kbhit())
+			{
+
+				key = _getch();
+			}
+			if (GetAsyncKeyState(VK_LEFT) & 0x8000)
+			{
+				player_x -= 1;
+				if (player_x < 0)player_x = 0;
+			}
+			if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
+			{
+				player_x += 1;
+				if (player_x > 53)player_x = 53;
+			}
+			GotoXY(player_x, player_y);
+			printf("%s", player);
+
+			// 로켓이 fasle 일때 스페이스를 누르면 로켓 발사
+			if (rocket == false)
+			{
+				if (key == SPACE)
+				{
+					rocket_x = player_x + 2;
+					rocket_y = player_y - 1;
+					rocket = true;
+				}
+			}
+
+			if (rocket_y <= 2)
+			{
+				rocket_0 = true;
+			}
+
+			// 로켓이 true이면 로켓을 출력 
+			if (rocket == true)
+			{
+				if (cnt % 1 == 0)
+				{
+					GotoXY(rocket_x, rocket_y);
+					printf("  ");
+					rocket_y--;
+					GotoXY(rocket_x, rocket_y);
+					printf("⊙");
+					if (rocket_y > 1 && rocket_y < 7)
+					{
+						if (rocket_x > boss_x && rocket_x < boss_x + 20)
+						{
+							rocket = false;
+							rocket_0 = false;
+							system("cls");
+							boss_hp -= 1;
+						}
+					}
+					if (rocket_0 == true)
+					{
+						rocket = false;
+						rocket_0 = false;
+						GotoXY(rocket_x, rocket_y);
+						printf("  ");
+					}
+				}
+			}
+			// 플레이어나 보스 HP가 0이면 종료
+			if (player_hp <= 0)
+			{
+				break;
+			}
+			else if (boss_hp == 0)
+			{
+				break;
+			}
+
+			Sleep(20);
+			cnt++;
+		}
+		// 플레이어 HP가 0이면 게임오버 출력
+		if (player_hp == 0)
+		{
+			system("cls");
+			game_Over();
+		}
+		if (boss_hp == 0)
+		{
+			system("cls");
+			game_Win();
+		}
+	}
+	return 0;
+} 
